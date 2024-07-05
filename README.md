@@ -7,30 +7,17 @@
 </p>
 
 ## Performance
-| Model | Test Size | Param. | FLOPs | F1 Score | AP<sub>50</sub><sup>val</sup> | AP<sub>50-95</sub><sup>val</sup> | Speed |
-| :--: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| YOLOv8 | 1024 | 43.61M | 164.9G | 0.62 | 63.58% | 40.40% | 7.7ms |
-| YOLOv8+SA | 1024 | 43.64M | 165.4G | 0.63 | 64.25% | 41.64% | 8.0ms |
-| YOLOv8+ECA | 1024 | 43.64M | 165.5G | 0.65 | 64.24% | 41.94% | 7.7ms |
-| YOLOv8+GAM | 1024 | 49.29M | 183.5G | 0.65 | 64.26% | 41.00% | 12.7ms |
-| YOLOv8+ResGAM | 1024 | 49.29M | 183.5G | 0.64 | 64.98% | 41.75% | 18.1ms |
-| YOLOv8+ResCBAM | 1024 | 53.87M | 196.2G | 0.64 | 65.78% | 42.16% | 8.7ms |
+| Model | Test Size | Param. | FLOPs | AP<sub>50</sub><sup>same</sup> | AP<sub>50-95</sub><sup>same</sup> | Speed | AP<sub>50</sub><sup>other</sup> | AP<sub>50-95</sub><sup>other</sup> |
+| :--: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| YOLOv8+Ai1 | - | -.61M | -.9G |  -.58% | -.40% | -7.7ms | 0.62 | ---|
+| YOLOv8+1vA | - | -.64M | -.4G |  -.25% | -.64% | -8.0ms | 0.62 | ---|
+| YOLOv8+SE+Ai1 | - | -.64M | -.5G |  --24% | -.94% | -.7ms | 0.62 | ---|
+| YOLOv8+SE+1vA | - | -.29M | -.5G | -.26% | -.00% | -.7ms | 0.62 | ---|
+| YOLOv8+ResSE+Ai1 | - | -.64M | -.5G | -.24% | -.94% | -.7ms | 0.62 | ---|
+| YOLOv8+ResSE+1vA | - | -.29M | -.5G | -.26% | -.00% | -.7ms | 0.62 | ---|
+| YOLOv8+ResCBAM+Ai1 | - | -.29M | -.5G | -.98% | -.75% | -.1ms | 0.62 | ---|
+| YOLOv8+ResCBAM+1vA | - | -.87M | -.2G | -.78% | -.16% | -.7ms | 0.62 | ---|
 
-## Citation
-If you find our paper useful in your research, please consider citing:
-
-    @article{chien2024yolov8am,
-      title={YOLOv8-AM: YOLOv8 with Attention Mechanisms for Pediatric Wrist Fracture Detection},
-       author={Chun-Tse Chien and Rui-Yang Ju and Kuang-Yi Chou and Enkaer Xieerke and Jen-Shiun Chiang},
-      journal={arXiv preprint arXiv:2402.09329},
-      year={2024}
-    }
-
-## Requirements
-* Linux (Ubuntu)
-* Python = 3.9
-* Pytorch = 1.13.1
-* NVIDIA GPU + CUDA CuDNN
 
 ## Environment
 ```
@@ -39,17 +26,19 @@ If you find our paper useful in your research, please consider citing:
 
 ## Dataset
 ### Download the dataset
-* You can download the GRAZPEDWRI-DX Dataset on this [Link](https://figshare.com/articles/dataset/GRAZPEDWRI-DX/14825193).
+* You can download the Expanded Dataset on this [Link]([https://figshare.com/articles/dataset/GRAZPEDWRI-DX/14825193](https://www.kaggle.com/datasets/mohitsharmab21ee037/extended-dataset)).
+  
 ### Split the dataset
 * To split the dataset into training set, validation set, and test set, you should first put the image and annotatation into `./GRAZPEDWRI-DX/data/images`, and `./GRAZPEDWRI-DX/data/labels`.
 * And then you can split the dataset as the following step:
   ```
     python split.py
   ```
-* The dataset is divided into training, validation, and testing set (70-20-10 %) according to the key `patient_id` stored in `dataset.csv`. The script then will move the files into the relative folder as it is represented here below.
+### Directory Structure
+* The dataset must contain training and validation (optional-testing).
 
 
-       GRAZPEDWRI-DX
+       Trainable Dataset
           └── data   
                ├── meta.yaml
                ├── images
@@ -74,48 +63,9 @@ If you find our paper useful in your research, please consider citing:
                          └── ...
 
 
-The script will create 3 files: `train_data.csv`, `valid_data.csv`, and `test_data.csv` with the same structure of `dataset.csv`.
                       
 ### Data Augmentation
-* Data augmentation of the training set using the addWeighted function doubles the size of the training set.
-```
-  python imgaug.py --input_img /path/to/input/train/ --output_img /path/to/output/train/ --input_label /path/to/input/labels/ --output_label /path/to/output/labels/
-```
-For example:
-```
-  python imgaug.py --input_img ./GRAZPEDWRI-DX/data/images/train/ --output_img ./GRAZPEDWRI-DX/data/images/train_aug/ --input_label ./GRAZPEDWRI-DX/data/labels/train/ --output_label ./GRAZPEDWRI-DX/data/labels/train_aug/
-```
-* The path of the processed file is shown below:
-
-       GRAZPEDWRI-DX
-          └── data   
-               ├── meta.yaml
-               ├── images
-               │    ├── train
-               │    │    ├── train_img1.png
-               │    │    └── ...
-               │    ├── train_aug
-               │    │    ├── train_aug_img1.png
-               │    │    └── ...
-               │    ├── valid
-               │    │    ├── valid_img1.png
-               │    │    └── ...
-               │    └── test
-               │         ├── test_img1.png
-               │         └── ...
-               └── labels
-                    ├── train
-                    │    ├── train_annotation1.txt
-                    │    └── ...
-                    ├── train_aug
-                    │    ├── train_aug_annotation1.txt
-                    │    └── ...
-                    ├── valid
-                    │    ├── valid_annotation1.txt
-                    │    └── ...
-                    └── test
-                         ├── test_annotation1.txt
-                         └── ...
+* working
   
 ## Methodology
 * We have modified the model architecture of YOLOv8 by adding four types of attention modules, including <b>Shuffle Attention (SA), Efficient Channel Attention (ECA), Global Attention Mechanism (GAM), and ResBlock Convolutional Block Attention Module (ResCBAM)</b>.
