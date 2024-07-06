@@ -1,7 +1,8 @@
-# YOLOv8 and Attention YOLOv8 (SE + ResNet and CMAM + ResNet)
+# YOLOv8 and Attention YOLOv8 (SE, SE + ResNet and CBAM + ResNet)
 
 
-## Architecture
+## Architecture 
+We modified attention part 'A' with SE/CBAM etc in-between head and neck (in codes,combined as head)
 <p align="center">
   <img src="img/figure_architecture.jpg" width="1024" title="details">
 </p>
@@ -38,8 +39,7 @@
 ### Directory Structure
 * The dataset must contain training and validation (optional-testing).
 
-
-       Trainable Dataset
+       Parsed Data(normalized labels with same name .jpg image name_xx.txt, name_xx.jpg)
           └── data   
                ├── meta.yaml
                ├── images
@@ -47,22 +47,17 @@
                │    │    ├── train_img1.png
                │    │    └── ...
                │    ├── valid
-               │    │    ├── valid_img1.png
                │    │    └── ...
                │    └── test
-               │         ├── test_img1.png
                │         └── ...
                └── labels
                     ├── train
                     │    ├── train_annotation1.txt
                     │    └── ...
                     ├── valid
-                    │    ├── valid_annotation1.txt
                     │    └── ...
                     └── test
-                         ├── test_annotation1.txt
                          └── ...
-
 
                       
 ### Data Augmentation
@@ -70,8 +65,9 @@
   
 ## Methodology
 * We have modified the model architecture of YOLOv8 by adding three types of attention modules, including <b>SE-Module (SE), ResNet with SE (SENet) and ResBlock Convolutional Block Attention Module (ResCBAM)</b>.
+* Attention module namely SE,CBAM structure - 
 <p align="center">
-  <img src="img/figure_details.jpg" width="1024" title="details">
+  <img src="img/SENet CMAB CA.png" width="1024" title="details">
 </p>
 
 ## Train & Validate
@@ -89,12 +85,9 @@ You can set the value in the `./ultralytics/cfg/default.yaml`.
 
 
 
-## Related Works
-
+## Reference
 <details><summary> <b>Expand</b> </summary>
 
-* [https://github.com/RuiyangJu/Bone_Fracture_Detection_YOLOv8](https://github.com/RuiyangJu/Bone_Fracture_Detection_YOLOv8)
-* [https://github.com/RuiyangJu/YOLOv9-Fracture-Detection](https://github.com/RuiyangJu/YOLOv9-Fracture-Detection)
-* [https://github.com/RuiyangJu/YOLOv8_Global_Context_Fracture_Detection](https://github.com/RuiyangJu/YOLOv8_Global_Context_Fracture_Detection)
+* [https://github.com/RuiyangJu/Fracture_Detection_Improved_YOLOv8](https://github.com/RuiyangJu/Fracture_Detection_Improved_YOLOv8)
 
 </details>
