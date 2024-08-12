@@ -7,6 +7,12 @@ We modified attention part 'A' with SE/CBAM etc in-between head and neck (in cod
   <img src="img/figure_architecture.jpg" width="1024" title="details">
 </p>
 
+* Attention module namely SE,CBAM structure - 
+<p align="center">
+  <img src="img/SENet CMAB CA.png" width="1024" title="details">
+</p>
+
+
 ## Performance (working.....to add all parameters)
 <p align="center">
   <img src="img/yolov8.png" width="1024" title="details">
